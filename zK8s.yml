@@ -96,4 +96,3 @@ Resources:
            cd kubespray
            cp -rf inventory/sample inventory/z-cluster
            cd inventory/z-cluster
-
