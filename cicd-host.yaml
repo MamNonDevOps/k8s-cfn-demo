@@ -34,3 +34,20 @@ z-master3
 z-worker1
 z-worker2
 z-worker3
+
+
+sudo docker run --rm -it --mount type=bind,source=/home/ec2-user/kubernetes_installation/kubespray/inventory/z-cluster,dst=/inventory \
+  --mount type=bind,source=/home/ec2-user/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
+  --mount type=bind,source=/home/ec2-user/.ssh/id_rsa,dst=/home/ec2-user/.ssh/id_rsa \
+  quay.io/kubespray/kubespray bash
+
+
+ansible-playbook -i /inventory/hosts.yaml cluster.yml --user=ec2-user --ask-pass --become --ask-become-pass
+
+
+ssh-copy-id z-master1
+ssh-copy-id z-master2
+ssh-copy-id z-master3
+ssh-copy-id z-worker1
+ssh-copy-id z-worker2
+ssh-copy-id z-worker3

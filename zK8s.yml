@@ -41,7 +41,7 @@ Resources:
       LaunchTemplateName: EC2LaunchTemplate
       LaunchTemplateData:
         ImageId: !Ref ImageId
-        InstanceType: t2.micro
+        InstanceType: t2.medium
         KeyName: !Ref KeyName
         SecurityGroupIds:
           - !GetAtt EC2SecurityGroup.GroupId
@@ -75,6 +75,90 @@ Resources:
         - Key: Name
           Value: z-master1
 
+  Master2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref EC2LaunchTemplate
+        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+      SubnetId: !Ref SubnetId
+      PrivateIpAddress: 172.31.0.12
+      Tags:
+        - Key: Name
+          Value: z-master2
+
+  Master3Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref EC2LaunchTemplate
+        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+      SubnetId: !Ref SubnetId
+      PrivateIpAddress: 172.31.0.13
+      Tags:
+        - Key: Name
+          Value: z-master3
+
+  Worker1Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref EC2LaunchTemplate
+        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+      SubnetId: !Ref SubnetId
+      PrivateIpAddress: 172.31.0.14
+      Tags:
+        - Key: Name
+          Value: z-worker1
+
+  Worker2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref EC2LaunchTemplate
+        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+      SubnetId: !Ref SubnetId
+      PrivateIpAddress: 172.31.0.15
+      Tags:
+        - Key: Name
+          Value: z-worker2
+
+  Worker3Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref EC2LaunchTemplate
+        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+      SubnetId: !Ref SubnetId
+      PrivateIpAddress: 172.31.0.16
+      Tags:
+        - Key: Name
+          Value: z-worker3
+
+  GitLabInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref EC2LaunchTemplate
+        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+      SubnetId: !Ref SubnetId
+      PrivateIpAddress: 172.31.0.18
+      Tags:
+        - Key: Name
+          Value: z-gitlab
+
+  RancherInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref EC2LaunchTemplate
+        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+      SubnetId: !Ref SubnetId
+      PrivateIpAddress: 172.31.0.19
+      Tags:
+        - Key: Name
+          Value: z-rancher
+
   CICDInstance:
     Type: AWS::EC2::Instance
     Properties:
@@ -86,13 +170,15 @@ Resources:
       Tags:
         - Key: Name
           Value: z-cicd
-      UserData:
-        Fn::Base64: |
-           #!/bin/bash
-           yum install git -y
-           mkdir kubernetes_installation/
-           cd kubernetes_installation
-           git clone https://github.com/kubernetes-sigs/kubespray.git --branch release-2.16
-           cd kubespray
-           cp -rf inventory/sample inventory/z-cluster
-           cd inventory/z-cluster
+      # Neu insert user data ben duoi se ghi de len user data cua template
+      # UserData:
+      #   Fn::Base64: |
+      #      #!/bin/bash
+      #      yum install git -y
+      #      mkdir kubernetes_installation/
+      #      cd kubernetes_installation
+      #      git clone https://github.com/kubernetes-sigs/kubespray.git --branch release-2.16
+      #      cd kubespray
+      #      cp -rf inventory/sample inventory/z-cluster
+      #      cd inventory/z-cluster
+      #      wget https://raw.githubusercontent.com/MamNonDevOps/k8s-cloudformation-demo/main/cicd-host.yaml
