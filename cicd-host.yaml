@@ -1,0 +1,36 @@
+[all]
+z-master1  ansible_host=172.31.0.11      ip=172.31.0.11
+z-master2  ansible_host=172.31.0.12      ip=172.31.0.12
+z-master3  ansible_host=172.31.0.13      ip=172.31.0.13
+z-worker1  ansible_host=172.31.0.14      ip=172.31.0.14
+z-worker2  ansible_host=172.31.0.15      ip=172.31.0.15
+z-worker3  ansible_host=172.31.0.16      ip=172.31.0.16
+
+[kube-master]
+z-master1
+z-master2
+z-master3
+
+[kube-node]
+z-worker1
+z-worker2
+z-worker3
+
+[etcd]
+z-master1
+z-master2
+z-master3
+
+[k8s-cluster:children]
+kube-node
+kube-master
+
+[calico-rr]
+
+[vault]
+z-master1
+z-master2
+z-master3
+z-worker1
+z-worker2
+z-worker3
