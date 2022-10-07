@@ -53,17 +53,33 @@ z-worker2
 z-worker3
 ```
 
+Edit file inventory/z-cluster/group_vars/k8s_cluster/k8s-cluster.yml
+```
+-kube_network_plugin: calico-
+kube_network_plugin: flannel
+```
+
 Copy private key to folder /home/ec2-user/.ssh
+
+Install docker
+```
+sudo yum install docker -y
+```
+
+Start docker
+```
+sudo systemctl start docker
+```
 
 Run container kubespray
 ```
 sudo docker run --rm -it --mount type=bind,source=/home/ec2-user/kubernetes_installation/kubespray/inventory/z-cluster,dst=/inventory \
   --mount type=bind,source=/home/ec2-user/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
   --mount type=bind,source=/home/ec2-user/.ssh/id_rsa,dst=/home/ec2-user/.ssh/id_rsa \
-  quay.io/kubespray/kubespray bash
+  quay.io/kubespray/kubespray:v2.16.0 bash
 ```
 
-Run ansible-playbook in container
+Run ansible-playbook in `kubespray` container
 ```
 ansible-playbook -i /inventory/hosts.yaml cluster.yml --user=ec2-user --ask-pass --become --ask-become-pass
 ```
