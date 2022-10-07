@@ -67,6 +67,11 @@ Install docker
 sudo yum install docker -y
 ```
 
+Add your user to the docker group
+```
+sudo usermod -aG docker ec2-user
+```
+
 Start docker
 ```
 sudo systemctl start docker
