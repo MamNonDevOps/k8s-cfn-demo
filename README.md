@@ -13,7 +13,7 @@ cp -rf inventory/sample inventory/z-cluster
 cd inventory/z-cluster
 ```
 
-Make a `hosts.yaml` in `z-cluster` folder
+Create a file `hosts.yaml` in folder `z-cluster`
 ```
 [all]
 z-master1  ansible_host=172.31.0.11      ip=172.31.0.11
@@ -51,21 +51,19 @@ z-master3
 z-worker1
 z-worker2
 z-worker3
+```
 
+Copy private key to folder /home/ec2-user/.ssh
 
+Run container kubespray
+```
 sudo docker run --rm -it --mount type=bind,source=/home/ec2-user/kubernetes_installation/kubespray/inventory/z-cluster,dst=/inventory \
   --mount type=bind,source=/home/ec2-user/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
   --mount type=bind,source=/home/ec2-user/.ssh/id_rsa,dst=/home/ec2-user/.ssh/id_rsa \
   quay.io/kubespray/kubespray bash
+```
 
-
+Run ansible-playbook in container
+```
 ansible-playbook -i /inventory/hosts.yaml cluster.yml --user=ec2-user --ask-pass --become --ask-become-pass
-
-
-ssh-copy-id z-master1
-ssh-copy-id z-master2
-ssh-copy-id z-master3
-ssh-copy-id z-worker1
-ssh-copy-id z-worker2
-ssh-copy-id z-worker3
 ```
