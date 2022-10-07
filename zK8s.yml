@@ -170,15 +170,3 @@ Resources:
       Tags:
         - Key: Name
           Value: z-cicd
-      # Neu insert user data ben duoi se ghi de len user data cua template
-      # UserData:
-      #   Fn::Base64: |
-      #      #!/bin/bash
-      #      yum install git -y
-      #      mkdir kubernetes_installation/
-      #      cd kubernetes_installation
-      #      git clone https://github.com/kubernetes-sigs/kubespray.git --branch release-2.16
-      #      cd kubespray
-      #      cp -rf inventory/sample inventory/z-cluster
-      #      cd inventory/z-cluster
-      #      wget https://raw.githubusercontent.com/MamNonDevOps/k8s-cloudformation-demo/main/cicd-host.yaml

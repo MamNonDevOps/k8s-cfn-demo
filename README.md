@@ -54,8 +54,9 @@ z-worker3
 ```
 
 Edit file inventory/z-cluster/group_vars/k8s_cluster/k8s-cluster.yml
+
+<strike>kube_network_plugin: calico</strike>
 ```
--kube_network_plugin: calico-
 kube_network_plugin: flannel
 ```
 
