@@ -18,7 +18,7 @@ Resources:
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: My SG with SSH, HTTP, HTTPS, Ping
+      GroupDescription: My SG with SSH, HTTP, HTTPS, Ping, kube-api-server
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -36,7 +36,8 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
+        - Description: Default port kube-api-server
+          IpProtocol: tcp
           FromPort: 6443
           ToPort: 6443
           CidrIp: 0.0.0.0/0
