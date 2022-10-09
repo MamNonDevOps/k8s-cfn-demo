@@ -7,6 +7,8 @@ Parameters:
   ImageId:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+    # Type: AWS::EC2::Image::Id
+    # Default: ami-0149b2da6ceec4bb0    #Ubuntu
 
   SubnetId:
     Type: AWS::EC2::Subnet::Id
@@ -34,6 +36,10 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 6443
+          ToPort: 6443
+          CidrIp: 0.0.0.0/0
 
   EC2LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
@@ -43,6 +49,11 @@ Resources:
         ImageId: !Ref ImageId
         InstanceType: t2.medium
         KeyName: !Ref KeyName
+        BlockDeviceMappings:
+          - DeviceName: /dev/xvda
+            Ebs:
+              VolumeSize: 20
+              VolumeType: gp2
         SecurityGroupIds:
           - !GetAtt EC2SecurityGroup.GroupId
         UserData:
@@ -53,6 +64,10 @@ Resources:
             systemctl stop firewalld
             systemctl disable firewalld
             sysctl -w net.ipv4.ip_forward=1
+            rm -rf /var/lib/etcd2/*
+            rm -f /etc/systemd/system/etcd*
+            rm -f /var/backups
+            rm -rf /etc/ssl/etcd
             echo "172.31.0.11 z-master1" >> /etc/hosts
             echo "172.31.0.12 z-master2" >> /etc/hosts
             echo "172.31.0.13 z-master3" >> /etc/hosts
@@ -75,29 +90,29 @@ Resources:
         - Key: Name
           Value: z-master1
 
-  Master2Instance:
-    Type: AWS::EC2::Instance
-    Properties:
-      LaunchTemplate:
-        LaunchTemplateId: !Ref EC2LaunchTemplate
-        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
-      SubnetId: !Ref SubnetId
-      PrivateIpAddress: 172.31.0.12
-      Tags:
-        - Key: Name
-          Value: z-master2
+  # Master2Instance:
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     LaunchTemplate:
+  #       LaunchTemplateId: !Ref EC2LaunchTemplate
+  #       Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+  #     SubnetId: !Ref SubnetId
+  #     PrivateIpAddress: 172.31.0.12
+  #     Tags:
+  #       - Key: Name
+  #         Value: z-master2
 
-  Master3Instance:
-    Type: AWS::EC2::Instance
-    Properties:
-      LaunchTemplate:
-        LaunchTemplateId: !Ref EC2LaunchTemplate
-        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
-      SubnetId: !Ref SubnetId
-      PrivateIpAddress: 172.31.0.13
-      Tags:
-        - Key: Name
-          Value: z-master3
+  # Master3Instance:
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     LaunchTemplate:
+  #       LaunchTemplateId: !Ref EC2LaunchTemplate
+  #       Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+  #     SubnetId: !Ref SubnetId
+  #     PrivateIpAddress: 172.31.0.13
+  #     Tags:
+  #       - Key: Name
+  #         Value: z-master3
 
   Worker1Instance:
     Type: AWS::EC2::Instance
@@ -123,41 +138,41 @@ Resources:
         - Key: Name
           Value: z-worker2
 
-  Worker3Instance:
-    Type: AWS::EC2::Instance
-    Properties:
-      LaunchTemplate:
-        LaunchTemplateId: !Ref EC2LaunchTemplate
-        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
-      SubnetId: !Ref SubnetId
-      PrivateIpAddress: 172.31.0.16
-      Tags:
-        - Key: Name
-          Value: z-worker3
+  # Worker3Instance:
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     LaunchTemplate:
+  #       LaunchTemplateId: !Ref EC2LaunchTemplate
+  #       Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+  #     SubnetId: !Ref SubnetId
+  #     PrivateIpAddress: 172.31.0.16
+  #     Tags:
+  #       - Key: Name
+  #         Value: z-worker3
 
-  GitLabInstance:
-    Type: AWS::EC2::Instance
-    Properties:
-      LaunchTemplate:
-        LaunchTemplateId: !Ref EC2LaunchTemplate
-        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
-      SubnetId: !Ref SubnetId
-      PrivateIpAddress: 172.31.0.18
-      Tags:
-        - Key: Name
-          Value: z-gitlab
+  # GitLabInstance:
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     LaunchTemplate:
+  #       LaunchTemplateId: !Ref EC2LaunchTemplate
+  #       Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+  #     SubnetId: !Ref SubnetId
+  #     PrivateIpAddress: 172.31.0.18
+  #     Tags:
+  #       - Key: Name
+  #         Value: z-gitlab
 
-  RancherInstance:
-    Type: AWS::EC2::Instance
-    Properties:
-      LaunchTemplate:
-        LaunchTemplateId: !Ref EC2LaunchTemplate
-        Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
-      SubnetId: !Ref SubnetId
-      PrivateIpAddress: 172.31.0.19
-      Tags:
-        - Key: Name
-          Value: z-rancher
+  # RancherInstance:
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     LaunchTemplate:
+  #       LaunchTemplateId: !Ref EC2LaunchTemplate
+  #       Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+  #     SubnetId: !Ref SubnetId
+  #     PrivateIpAddress: 172.31.0.19
+  #     Tags:
+  #       - Key: Name
+  #         Value: z-rancher
 
   CICDInstance:
     Type: AWS::EC2::Instance

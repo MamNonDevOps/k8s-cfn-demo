@@ -11,9 +11,10 @@ git clone https://github.com/kubernetes-sigs/kubespray.git --branch release-2.16
 cd kubespray
 cp -rf inventory/sample inventory/z-cluster
 cd inventory/z-cluster
+touch hosts.yaml
 ```
 
-Create a file `hosts.yaml` in folder `z-cluster`
+Edit a file `hosts.yaml` in folder `z-cluster`
 ```
 [all]
 z-master1  ansible_host=172.31.0.11      ip=172.31.0.11
